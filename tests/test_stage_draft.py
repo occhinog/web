@@ -51,13 +51,20 @@ class StageDraftTests(unittest.TestCase):
             export = root / "export"
             repo = root / "repo"
             repo.mkdir()
+            (repo / "README.md").write_text(
+                "# web\n\n## Generated drafts\n\n"
+                "<!-- draft-index:start -->\n"
+                "_No website drafts generated yet._\n"
+                "<!-- draft-index:end -->\n",
+                encoding="utf-8",
+            )
             write_lead(lead)
             write_export(export)
 
             url = stage.stage_draft(lead, export, repo)
-            draft = repo / "drafts" / LEAD_ID
+            draft = repo / LEAD_ID
             wrapper = (draft / "index.html").read_text()
-            self.assertEqual(url, f"https://web.occhino.it/drafts/{LEAD_ID}/")
+            self.assertEqual(url, f"https://web.occhino.it/{LEAD_ID}/")
             self.assertIn(">ACCEPT<", wrapper)
             self.assertIn(">DECLINE<", wrapper)
             self.assertIn("webmaster@occhino.it", wrapper)
@@ -67,6 +74,11 @@ class StageDraftTests(unittest.TestCase):
             self.assertTrue((draft / "site" / "index.html").is_file())
             manifest = json.loads((draft / "manifest.json").read_text())
             self.assertEqual(manifest["generator"], "lovable_mcp")
+            self.assertEqual(manifest["published_path"], f"/{LEAD_ID}/")
+            readme = (repo / "README.md").read_text()
+            self.assertIn("Rossi & Figli", readme)
+            self.assertIn(f"https://web.occhino.it/{LEAD_ID}/", readme)
+            self.assertNotIn("No website drafts generated yet", readme)
 
     def test_requires_recorded_lovable_generation(self):
         with tempfile.TemporaryDirectory() as directory:

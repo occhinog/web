@@ -18,6 +18,8 @@ from typing import Dict, List, Optional, Tuple
 
 CONTACT_EMAIL = "webmaster@occhino.it"
 BASE_URL = "https://web.occhino.it"
+INDEX_START = "<!-- draft-index:start -->"
+INDEX_END = "<!-- draft-index:end -->"
 LEAD_ID_PATTERN = re.compile(r"^[a-z0-9][a-z0-9-]{6,80}$")
 RESOURCE_ATTRIBUTES = {
     "a": ("href",),
@@ -169,7 +171,7 @@ def decision_mailto(decision: str, lead_id: str, business_name: str, public_url:
 
 
 def render_wrapper(lead_id: str, business_name: str) -> str:
-    public_url = f"{BASE_URL}/drafts/{lead_id}/"
+    public_url = f"{BASE_URL}/{lead_id}/"
     accept_url = decision_mailto("ACCEPT", lead_id, business_name, public_url)
     decline_url = decision_mailto("DECLINE", lead_id, business_name, public_url)
     title = html.escape(f"Bozza sito — {business_name}")
@@ -226,6 +228,70 @@ def render_wrapper(lead_id: str, business_name: str) -> str:
 """
 
 
+def markdown_cell(value: object) -> str:
+    return " ".join(str(value or "").split()).replace("|", "\\|")
+
+
+def draft_manifests(repo_root: Path) -> List[Dict[str, object]]:
+    manifests: List[Dict[str, object]] = []
+    for path in repo_root.glob("*/manifest.json"):
+        try:
+            manifest = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise StageError(f"Cannot read draft manifest: {path}") from exc
+        lead_id = str(manifest.get("lead_id") or "")
+        if path.parent.name != lead_id or not LEAD_ID_PATTERN.fullmatch(lead_id):
+            raise StageError(f"Draft manifest identity mismatch: {path}")
+        if manifest.get("published_path") != f"/{lead_id}/":
+            raise StageError(f"Draft manifest path mismatch: {path}")
+        manifests.append(manifest)
+    return sorted(manifests, key=lambda item: (
+        str(item.get("business_name") or "").casefold(),
+        str(item.get("lead_id") or ""),
+    ))
+
+
+def render_draft_index(manifests: List[Dict[str, object]]) -> str:
+    lines = [INDEX_START]
+    if not manifests:
+        lines.append("_No website drafts generated yet._")
+    else:
+        lines.extend([
+            "| Business | Draft | Generator | Updated (UTC) |",
+            "| --- | --- | --- | --- |",
+        ])
+        generator_names = {"lovable_mcp": "Lovable", "codex_sites": "Codex Sites"}
+        for manifest in manifests:
+            lead_id = str(manifest["lead_id"])
+            name = markdown_cell(manifest.get("business_name") or lead_id)
+            generator = generator_names.get(str(manifest.get("generator") or ""), markdown_cell(manifest.get("generator")))
+            updated = markdown_cell(manifest.get("staged_at_utc"))
+            url = f"{BASE_URL}/{lead_id}/"
+            lines.append(f"| {name} | [Open draft]({url}) | {generator} | {updated} |")
+    lines.append(INDEX_END)
+    return "\n".join(lines)
+
+
+def update_readme_index(repo_root: Path) -> None:
+    readme = repo_root / "README.md"
+    index = render_draft_index(draft_manifests(repo_root))
+    if readme.exists():
+        content = readme.read_text(encoding="utf-8")
+    else:
+        content = "# web\n"
+    has_start = INDEX_START in content
+    has_end = INDEX_END in content
+    if has_start != has_end:
+        raise StageError("README.md contains an incomplete draft-index marker pair")
+    if has_start:
+        prefix, remainder = content.split(INDEX_START, 1)
+        _, suffix = remainder.split(INDEX_END, 1)
+        content = prefix + index + suffix
+    else:
+        content = content.rstrip() + "\n\n## Generated drafts\n\n" + index + "\n"
+    atomic_write(readme, content)
+
+
 def atomic_write(path: Path, content: str) -> None:
     temporary = path.with_name(path.name + ".tmp")
     with temporary.open("w", encoding="utf-8", newline="\n") as handle:
@@ -240,7 +306,7 @@ def stage_draft(lead_path: Path, site_dir: Path, repo_root: Path, replace: bool 
     validate_export(site_dir)
     lead_id = str(lead["lead_id"])
     business_name = str((lead.get("business") or {}).get("name") or "Attività")
-    destination = repo_root / "drafts" / lead_id
+    destination = repo_root / lead_id
     if destination.exists() and not replace:
         raise StageError(f"Draft already exists: {destination}; pass --replace to update it")
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -255,7 +321,7 @@ def stage_draft(lead_path: Path, site_dir: Path, repo_root: Path, replace: bool 
             "lead_id": lead_id,
             "business_name": business_name,
             "generator": "lovable_mcp",
-            "published_path": f"/drafts/{lead_id}/",
+            "published_path": f"/{lead_id}/",
             "staged_at_utc": utc_now(),
         }
         atomic_write(staging / "manifest.json", json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
@@ -272,7 +338,8 @@ def stage_draft(lead_path: Path, site_dir: Path, repo_root: Path, replace: bool 
             shutil.rmtree(backup)
         else:
             staging.replace(destination)
-    return f"{BASE_URL}/drafts/{lead_id}/"
+    update_readme_index(repo_root)
+    return f"{BASE_URL}/{lead_id}/"
 
 
 def make_parser() -> argparse.ArgumentParser:

@@ -4,21 +4,30 @@ Public, static hosting for reviewed website drafts generated from the
 [`LeadScanner`](https://github.com/occhinog/LeadScanner) workflow.
 
 - Public host: <https://web.occhino.it>
-- Published paths: `https://web.occhino.it/drafts/<lead-id>/`
+- Published paths: `https://web.occhino.it/<lead-id>/`
 - Contact: `webmaster@occhino.it`
 
-The root page does not list drafts, every page is marked `noindex`, and
+The homepage does not list drafts. This README records each generated draft so
+the repository remains inspectable. Every page is marked `noindex`, and
 `robots.txt` asks crawlers not to index the site. URLs are unlisted, not access
 controlled: anyone with a link can open it, and all committed files are public.
 Do not commit private notes, personal data that is not already intended for the
 business's public contact, API keys, or source material without usage rights.
+
+## Generated drafts
+
+<!-- draft-index:start -->
+_No website drafts generated yet._
+<!-- draft-index:end -->
+
+`tools/stage_draft.py` updates this list whenever a reviewed export is staged.
 
 ## Draft structure
 
 Each staged draft has this shape:
 
 ```text
-drafts/<lead-id>/
+<lead-id>/
 ├── index.html       # host-owned ACCEPT / DECLINE wrapper
 ├── manifest.json    # minimal publication metadata
 └── site/
@@ -56,6 +65,6 @@ python3 -m unittest discover -s tests -v
 python3 -m http.server 8000
 ```
 
-Open `http://localhost:8000/drafts/<lead-id>/` for visual review. After review,
+Open `http://localhost:8000/<lead-id>/` for visual review. After review,
 commit and push `main`; GitHub Pages publishes the repository root using the
 custom domain in `CNAME`.
