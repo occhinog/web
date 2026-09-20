@@ -1,28 +1,736 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex,nofollow,noarchive">
-  <meta name="referrer" content="no-referrer">
-  <title>Website drafts</title>
-  <style>
-    :root { color-scheme: light; --ink: #181714; --paper: #f2eee6; --line: #d7d0c4; }
-    * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: var(--paper); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    main { width: min(620px, 100%); padding: clamp(28px, 6vw, 64px); border: 1px solid var(--line); background: rgba(255,255,255,.48); }
-    .mark { width: 42px; height: 42px; margin-bottom: 48px; border: 8px solid var(--ink); border-top-color: transparent; border-radius: 50%; transform: rotate(-25deg); }
-    p { margin: 0; color: #6d675f; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-    h1 { max-width: 11ch; margin: 12px 0 28px; font-size: clamp(44px, 10vw, 88px); font-weight: 780; letter-spacing: -.065em; line-height: .88; }
-    a { color: var(--ink); font-weight: 700; text-underline-offset: 4px; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Occhino.web: siti statici di una pagina su misura a 500 euro. Niente WordPress, niente plugin. Formula con dominio, hosting ed email a 50 euro l'anno.">
+<meta name="theme-color" content="#1C4E8C">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="Occhino.web - siti statici su misura">
+<meta property="og:description" content="Un sito di una pagina, costruito a mano. 500 euro una tantum.">
+<meta name="robots" content="index,follow">
+<title>Occhino.web</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --ground:      #F1F0EB;
+    --surface:     #FBFAF7;
+    --ink:         #16191C;
+    --ink-soft:    #50565C;
+    --ink-faint:   #858B91;
+    --rule:        #D8D6CE;
+    --rule-strong: #B4B1A6;
+    --accent:      #1C4E8C;
+    --accent-ink:  #FFFFFF;
+    --accent-soft: #E3EAF4;
+    --ochre:       #A8681B;
+    --no:          #9A3B2E;
+
+    --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --body:    "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+    --wrap: 1060px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #121519;
+      --surface:     #1A1E23;
+      --ink:         #E9EBED;
+      --ink-soft:    #A6ADB5;
+      --ink-faint:   #757D85;
+      --rule:        #2B3138;
+      --rule-strong: #3D444C;
+      --accent:      #7FA9DE;
+      --accent-ink:  #0E1216;
+      --accent-soft: #1C2938;
+      --ochre:       #D79A4C;
+      --no:          #D98275;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #121519;
+    --surface:     #1A1E23;
+    --ink:         #E9EBED;
+    --ink-soft:    #A6ADB5;
+    --ink-faint:   #757D85;
+    --rule:        #2B3138;
+    --rule-strong: #3D444C;
+    --accent:      #7FA9DE;
+    --accent-ink:  #0E1216;
+    --accent-soft: #1C2938;
+    --ochre:       #D79A4C;
+    --no:          #D98275;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: var(--wrap);
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+
+  a { color: inherit; }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* ---------- header ---------- */
+
+  .site-head {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 20;
+    background: color-mix(in srgb, var(--ground) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .head-in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 14px;
+  }
+  .brand {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 17px;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .brand .dot { color: var(--accent); }
+  .head-nav {
+    display: flex;
+    gap: 22px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
+  }
+  .head-nav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding-block: 2px;
+    border-bottom: 1px solid transparent;
+  }
+  .head-nav a:hover { color: var(--ink); border-bottom-color: var(--accent); }
+  @media (max-width: 680px) { .head-nav { display: none; } }
+
+  /* ---------- shared section furniture ---------- */
+
+  section { border-bottom: 1px solid var(--rule); }
+
+  .sec-pad { padding-block: clamp(48px, 7vw, 84px); }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 18px;
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(26px, 3.6vw, 38px);
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    margin: 0 0 14px;
+    text-wrap: balance;
+  }
+
+  h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 19px;
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+  }
+
+  .lede {
+    font-size: 17px;
+    color: var(--ink-soft);
+    max-width: 58ch;
+    margin: 0 0 32px;
+  }
+
+  /* ---------- hero ---------- */
+
+  .hero { padding-block: clamp(44px, 6.5vw, 76px) clamp(36px, 5vw, 56px); }
+
+  .hero h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(36px, 6.6vw, 68px);
+    line-height: 1.03;
+    letter-spacing: -0.035em;
+    margin: 0 0 20px;
+    max-width: 15ch;
+    text-wrap: balance;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .hero p {
+    font-size: clamp(16px, 1.7vw, 18.5px);
+    color: var(--ink-soft);
+    max-width: 56ch;
+    margin: 0 0 30px;
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .btn {
+    display: inline-block;
+    font-family: var(--body);
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    padding: 12px 22px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: var(--accent-ink);
+    transition: opacity .15s ease;
+  }
+  .btn:hover { opacity: .86; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--rule-strong);
+  }
+  .btn-ghost:hover { border-color: var(--ink); opacity: 1; }
+
+  /* ---------- spec strip ---------- */
+
+  .specs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--rule);
+  }
+  .spec {
+    padding: 20px 18px 22px;
+    border-right: 1px solid var(--rule);
+  }
+  .spec:last-child { border-right: 0; }
+  .spec .k {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  .spec .v {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(18px, 2.2vw, 23px);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 760px) {
+    .specs { grid-template-columns: repeat(2, 1fr); }
+    .spec:nth-child(2n) { border-right: 0; }
+    .spec:nth-child(-n+2) { border-bottom: 1px solid var(--rule); }
+  }
+
+  /* ---------- two-column body ---------- */
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: clamp(28px, 5vw, 64px);
+    align-items: start;
+  }
+  @media (max-width: 800px) { .split { grid-template-columns: 1fr; } }
+
+  /* ---------- itemised lists ---------- */
+
+  .items { list-style: none; margin: 0; padding: 0; }
+  .items li {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    gap: 12px;
+    padding-block: 13px;
+    border-top: 1px solid var(--rule);
+    align-items: baseline;
+  }
+  .items li:last-child { border-bottom: 1px solid var(--rule); }
+  .items .mark {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--accent);
+    line-height: 1.5;
+  }
+  .items.negative .mark { color: var(--no); }
+  .items strong {
+    font-weight: 600;
+    display: block;
+  }
+  .items span.note {
+    display: block;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+  }
+
+  /* ---------- pricing ---------- */
+
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: 8px;
+  }
+  @media (max-width: 760px) { .plans { grid-template-columns: 1fr; } }
+
+  .plan {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 26px 24px 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  .plan--pick { border-color: var(--accent); }
+
+  .plan-tag {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 14px;
+  }
+  .plan--pick .plan-tag { color: var(--accent); }
+
+  .plan-name {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 24px;
+    letter-spacing: -0.025em;
+    margin: 0 0 10px;
+  }
+
+  .price {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 40px;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 4px;
+  }
+  .price small {
+    font-family: var(--mono);
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 0;
+    color: var(--ink-soft);
+    margin-left: 6px;
+  }
+  .price-sub {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+    min-height: 20px;
+  }
+  .price-sub b { color: var(--ochre); font-weight: 500; }
+
+  .plan ul {
+    list-style: none;
+    margin: 0 0 22px;
+    padding: 0;
+    font-size: 14.5px;
+  }
+  .plan ul li {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    gap: 10px;
+    padding-block: 7px;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-soft);
+  }
+  .plan ul li:first-child { border-top: 0; }
+  .plan ul li i {
+    font-style: normal;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+  }
+  .plan ul li.off { color: var(--ink-faint); }
+  .plan ul li.off i { color: var(--no); }
+  .plan .btn { margin-top: auto; text-align: center; }
+
+  .fineprint {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--ink-faint);
+    margin-top: 26px;
+    max-width: 70ch;
+  }
+
+  /* ---------- steps ---------- */
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    margin-top: 6px;
+  }
+  .step {
+    padding: 22px 20px 26px;
+    border-left: 1px solid var(--rule);
+  }
+  .step:first-child { border-left: 0; padding-left: 0; }
+  .step .n {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 10px;
+  }
+  .step p {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+  }
+  @media (max-width: 860px) {
+    .steps { grid-template-columns: 1fr; }
+    .step {
+      border-left: 0;
+      border-top: 1px solid var(--rule);
+      padding-left: 0;
+      padding-block: 18px;
+    }
+    .step:first-child { border-top: 0; }
+  }
+
+  /* ---------- faq ---------- */
+
+  .faq { border-top: 1px solid var(--rule); margin-top: 4px; }
+  .faq details {
+    border-bottom: 1px solid var(--rule);
+  }
+  .faq summary {
+    cursor: pointer;
+    list-style: none;
+    padding-block: 16px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 16.5px;
+    letter-spacing: -0.01em;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: baseline;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: "+";
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 17px;
+    flex: none;
+  }
+  .faq details[open] summary::after { content: "–"; }
+  .faq p {
+    margin: 0 0 18px;
+    color: var(--ink-soft);
+    font-size: 15px;
+    max-width: 68ch;
+  }
+
+  /* ---------- contact ---------- */
+
+  .contact { background: var(--accent-soft); }
+  .mail {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(24px, 4.4vw, 40px);
+    letter-spacing: -0.03em;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    word-break: break-word;
+  }
+  .mail:hover { border-bottom-color: var(--accent); }
+
+  /* ---------- footer ---------- */
+
+  footer {
+    padding-block: 30px 40px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+  }
+  .foot-in {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 26px;
+    justify-content: space-between;
+  }
+  footer a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--rule-strong); }
+  footer a:hover { color: var(--ink); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+<style>
+  html { color-scheme: light dark; }
+  img { max-width: 100%; height: auto; }
+  [hidden] { display: none !important; }
+</style>
 </head>
 <body>
-  <main>
-    <div class="mark" aria-hidden="true"></div>
-    <p>Occhino · Website drafts</p>
-    <h1>Private review link required.</h1>
-    <a href="mailto:webmaster@occhino.it">webmaster@occhino.it</a>
-  </main>
+<header class="site-head">
+  <div class="wrap head-in">
+    <a class="brand" href="#top">Occhino<span class="dot">.</span>web</a>
+    <nav class="head-nav">
+      <a href="#cosa">Cosa facciamo</a>
+      <a href="#no">Cosa non facciamo</a>
+      <a href="#prezzi">Prezzi</a>
+      <a href="#come">Come funziona</a>
+      <a href="#contatti">Contatti</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Siti statici su misura · Sicilia</p>
+      <h1>Un sito che fa <em>una cosa sola</em>. Bene.</h1>
+      <p>Costruiamo siti di una pagina per attività che non hanno bisogno di un gestionale. Niente WordPress, niente plugin da aggiornare, niente pannelli di controllo da imparare. Solo il tuo sito: veloce, leggibile dal telefono, sempre online.</p>
+      <div class="cta-row">
+        <a class="btn" href="#contatti">Richiedi il tuo sito</a>
+        <a class="btn btn-ghost" href="#prezzi">Vedi i prezzi</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="specs">
+        <div class="spec">
+          <span class="k">Prezzo</span>
+          <span class="v">500 €</span>
+        </div>
+        <div class="spec">
+          <span class="k">Consegna</span>
+          <span class="v">2 settimane</span>
+        </div>
+        <div class="spec">
+          <span class="k">Peso pagina</span>
+          <span class="v">~120 KB</span>
+        </div>
+        <div class="spec">
+          <span class="k">Plugin da aggiornare</span>
+          <span class="v">0</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cosa" class="sec-pad">
+    <div class="wrap split">
+      <div>
+        <p class="eyebrow">Cosa facciamo</p>
+        <h2>Una pagina, costruita a mano</h2>
+        <p class="lede">Il sito è scritto in HTML e CSS, senza framework e senza database. È un file che il browser apre e basta: non c'è niente che possa rompersi mentre dormi, e non c'è niente da aggiornare ogni mese.</p>
+        <p class="lede" style="margin-bottom:0">Una pagina WordPress media pesa oltre 2 MB e carica decine di richieste. Una nostra pagina ne pesa circa 120 KB. Sul 3G di un paese di montagna, la differenza si vede.</p>
+      </div>
+      <div>
+        <ul class="items">
+          <li><span class="mark">+</span><span><strong>Una pagina singola, progettata su misura</strong><span class="note">Nessun tema comprato, nessun template riciclato.</span></span></li>
+          <li><span class="mark">+</span><span><strong>Galleria fotografica</strong><span class="note">Opzionale, se hai le foto: prodotti, camere, lavori, piatti.</span></span></li>
+          <li><span class="mark">+</span><span><strong>Contatti, orari, mappa, social</strong><span class="note">Le cose che la gente cerca davvero quando ti trova su Google.</span></span></li>
+          <li><span class="mark">+</span><span><strong>Leggibile dal telefono</strong><span class="note">Progettato prima per lo schermo piccolo, poi per il resto.</span></span></li>
+          <li><span class="mark">+</span><span><strong>Testi e struttura impostati con te</strong><span class="note">Se non sai cosa scrivere, lo scriviamo insieme.</span></span></li>
+          <li><span class="mark">+</span><span><strong>I file sono tuoi</strong><span class="note">A consegna ti diamo il codice. Puoi portarlo dove vuoi, anche da un altro.</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="no" class="sec-pad">
+    <div class="wrap split">
+      <div>
+        <p class="eyebrow">Cosa non facciamo</p>
+        <h2>Diciamo di no più spesso che di sì</h2>
+        <p class="lede">È la parte più utile di questa pagina. Se ti serve una delle cose qui sotto, il nostro sito non fa per te: te lo diciamo subito, senza farti perdere tre settimane, e quando possiamo ti indichiamo chi può fartelo.</p>
+      </div>
+      <div>
+        <ul class="items negative">
+          <li><span class="mark">×</span><span><strong>WordPress, Joomla e altri CMS</strong><span class="note">Non li installiamo e non li manteniamo.</span></span></li>
+          <li><span class="mark">×</span><span><strong>Sistemi di prenotazione</strong><span class="note">Camere, tavoli, appuntamenti: servono strumenti dedicati.</span></span></li>
+          <li><span class="mark">×</span><span><strong>E-commerce e pagamenti online</strong><span class="note">Carrello, magazzino, spedizioni: è un altro mestiere.</span></span></li>
+          <li><span class="mark">×</span><span><strong>Aree riservate e login</strong><span class="note">Niente account utente, niente password da gestire.</span></span></li>
+          <li><span class="mark">×</span><span><strong>Blog da aggiornare ogni settimana</strong><span class="note">Una pagina statica non è il posto giusto per cento articoli.</span></span></li>
+          <li><span class="mark">×</span><span><strong>Assistenza continuativa</strong><span class="note">Non c'è un numero da chiamare. Le modifiche si quotano a parte.</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="prezzi" class="sec-pad">
+    <div class="wrap">
+      <p class="eyebrow">Prezzi</p>
+      <h2>Due formule. Nessun costo nascosto.</h2>
+      <p class="lede">Il sito costa 500 € una tantum in entrambi i casi. L'unica differenza è chi si occupa di dominio e hosting.</p>
+
+      <div class="plans">
+
+        <div class="plan">
+          <p class="plan-tag">Formula A</p>
+          <p class="plan-name">Solo sito</p>
+          <div class="price">500 €<small>una tantum</small></div>
+          <p class="price-sub">Nessun costo ricorrente.</p>
+          <ul>
+            <li><i>+</i><span>Sito di una pagina su misura</span></li>
+            <li><i>+</i><span>Galleria fotografica opzionale</span></li>
+            <li><i>+</i><span>Consegna dei file sorgente</span></li>
+            <li><i>×</i><span class="off">Dominio a carico tuo</span></li>
+            <li><i>×</i><span class="off">Hosting a carico tuo</span></li>
+            <li><i>×</i><span class="off">Email non inclusa</span></li>
+          </ul>
+          <a class="btn btn-ghost" href="#contatti">Richiedi la Formula A</a>
+        </div>
+
+        <div class="plan plan--pick">
+          <p class="plan-tag">Formula B · consigliata</p>
+          <p class="plan-name">Sito + dominio</p>
+          <div class="price">500 €<small>una tantum</small></div>
+          <p class="price-sub">più <b>50 € / anno</b> per dominio ed email</p>
+          <ul>
+            <li><i>+</i><span>Tutto quello incluso nella Formula A</span></li>
+            <li><i>+</i><span>Dominio .it, .eu, .com o altro TLD comune</span></li>
+            <li><i>+</i><span>1 casella email sul tuo dominio</span></li>
+            <li><i>+</i><span>Hosting incluso</span></li>
+            <li><i>+</i><span>Rinnovo annuale, pagamento anticipato</span></li>
+            <li><i>×</i><span class="off">Assistenza non inclusa</span></li>
+          </ul>
+          <a class="btn" href="#contatti">Richiedi la Formula B</a>
+        </div>
+
+      </div>
+
+      <p class="fineprint">
+        Primo anno Formula B: 550 €. Dagli anni successivi: 50 € all'anno.<br>
+        Il canone di 50 € si paga in anticipo e copre dodici mesi di dominio, hosting e casella email. Non comprende assistenza, modifiche al sito o interventi di alcun tipo: ogni modifica successiva alla consegna viene preventivata a parte. Se il canone non viene rinnovato, il sito va offline e il dominio torna disponibile.
+      </p>
+    </div>
+  </section>
+
+  <section id="come" class="sec-pad">
+    <div class="wrap">
+      <p class="eyebrow">Come funziona</p>
+      <h2>Quattro passaggi, due settimane</h2>
+      <p class="lede">Il tempo dipende quasi solo da te: la parte lenta è sempre raccogliere foto e testi.</p>
+      <div class="steps">
+        <div class="step">
+          <span class="n">01</span>
+          <h3>Ci scrivi</h3>
+          <p>Ci dici che attività hai, cosa deve fare il sito e ci mandi foto, testi e contatti. Se i testi non ci sono, li buttiamo giù noi e li correggi tu.</p>
+        </div>
+        <div class="step">
+          <span class="n">02</span>
+          <h3>Ti mandiamo la bozza</h3>
+          <p>Entro una settimana vedi il sito vero, online su un indirizzo provvisorio. Non un mockup: la pagina funzionante.</p>
+        </div>
+        <div class="step">
+          <span class="n">03</span>
+          <h3>Un giro di correzioni</h3>
+          <p>Ci mandi le modifiche tutte insieme. Un giro è incluso nel prezzo; i giri successivi si quotano a parte.</p>
+        </div>
+        <div class="step">
+          <span class="n">04</span>
+          <h3>Online</h3>
+          <p>Pubblichiamo sul dominio, configuriamo l'email e ti consegniamo i file. Da lì il sito è tuo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-pad">
+    <div class="wrap split">
+      <div>
+        <p class="eyebrow">Domande</p>
+        <h2>Le cose che ci chiedono sempre</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>Posso avere più di una pagina?</summary>
+          <p>Una pagina più la galleria è il formato. Se ti serve una seconda pagina vera e propria — un menù lungo, un listino, una scheda tecnica — la valutiamo e la quotiamo a parte, ma di norma consigliamo di stare su una sola: per un'attività piccola funziona meglio.</p>
+        </details>
+        <details>
+          <summary>E se poi voglio cambiare un testo o una foto?</summary>
+          <p>Ce lo scrivi e ti facciamo un preventivo. Non c'è un pannello dove entri e modifichi da solo: è esattamente la complessità che questo servizio evita. In cambio non c'è niente che si rompe da solo.</p>
+        </details>
+        <details>
+          <summary>Di chi è il dominio?</summary>
+          <p>Tuo. Lo registriamo a tuo nome e resti tu l'intestatario. Se un giorno vuoi andare altrove, te lo porti via senza chiedere il permesso a nessuno.</p>
+        </details>
+        <details>
+          <summary>Perché non fate WordPress?</summary>
+          <p>Perché su un sito di una pagina aggiunge costi e problemi senza aggiungere niente: aggiornamenti mensili, plugin che si rompono, backup, e un sito venti volte più pesante. Se ti serve davvero un CMS, ti serve un fornitore diverso da noi.</p>
+        </details>
+        <details>
+          <summary>Fate fattura?</summary>
+          <p>Sì. Ogni lavoro viene fatturato regolarmente prima della consegna.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="contatti" class="contact sec-pad">
+    <div class="wrap">
+      <p class="eyebrow">Contatti</p>
+      <h2>Scrivici cosa fai</h2>
+      <p class="lede">Due righe sulla tua attività bastano. Rispondiamo entro due giorni, e se il tuo caso non è adatto a noi te lo diciamo subito.</p>
+      <a class="mail" href="mailto:webmaster@occhino.it">webmaster@occhino.it</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-in">
+    <span>Occhino.web — siti statici su misura</span>
+    <span>Un progetto della famiglia Occhino · <a href="https://www.occhino.it">occhino.it</a></span>
+  </div>
+</footer>
 </body>
 </html>

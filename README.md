@@ -1,15 +1,21 @@
 # web
 
-Public, static hosting for reviewed website drafts generated from the
+Public site for **Occhino.web** at the repository root, plus static hosting for
+reviewed website drafts generated from the
 [`LeadScanner`](https://github.com/occhinog/LeadScanner) workflow.
 
 - Public host: <https://web.occhino.it>
 - Published paths: `https://web.occhino.it/<lead-id>/`
 - Contact: `webmaster@occhino.it`
 
-The homepage does not list drafts. This README records each generated draft so
-the repository remains inspectable. Every page is marked `noindex`, and
-`robots.txt` asks crawlers not to index the site. URLs are unlisted, not access
+The homepage is the public Occhino.web offer page and is the only crawlable
+path: `robots.txt` disallows everything and re-allows only `/$`. Draft pages
+stay out of crawlers wherever they are mounted, and each is additionally marked
+`noindex,nofollow,noarchive`.
+
+The homepage does not list drafts, but this README records each generated draft
+so the repository remains inspectable. That list is public, so prefer lead IDs
+that do not disclose a client's name. Draft URLs are unlisted, not access
 controlled: anyone with a link can open it, and all committed files are public.
 Do not commit private notes, personal data that is not already intended for the
 business's public contact, API keys, or source material without usage rights.

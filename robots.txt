@@ -1,2 +1,5 @@
+# Only the homepage is crawlable. Every other path — including draft
+# previews, wherever they are mounted — is disallowed.
 User-agent: *
 Disallow: /
+Allow: /$
