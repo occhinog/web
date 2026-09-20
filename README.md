@@ -20,6 +20,14 @@ controlled: anyone with a link can open it, and all committed files are public.
 Do not commit private notes, personal data that is not already intended for the
 business's public contact, API keys, or source material without usage rights.
 
+## Homepage hero
+
+The homepage selects one optimized image on each page load from
+`images/hero-studio.jpg`, `images/hero-meccanico.jpg`, and
+`images/hero-fiorista.jpg`. The selection runs before the stylesheet is parsed,
+so only the chosen image is requested. `hero-studio.jpg` is the CSS fallback
+when JavaScript is unavailable.
+
 ## Generated drafts
 
 <!-- draft-index:start -->
