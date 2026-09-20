@@ -89,8 +89,7 @@
     text-decoration: none;
     white-space: nowrap;
   }
-  .brand-mark,
-  .footer-mark {
+  .brand-mark {
     width: 46px;
     height: 46px;
     display: grid;
@@ -389,16 +388,37 @@
   }
   .mail:hover { color: var(--cream); }
 
-  footer { padding-block: 38px; background: var(--charcoal); color: var(--cream); }
-  .foot-in { display: flex; align-items: center; justify-content: space-between; gap: 28px; }
-  .footer-brand { display: flex; align-items: center; gap: 13px; }
-  .footer-mark { width: 42px; height: 42px; font-size: 26px; }
-  .footer-copy { display: flex; flex-direction: column; line-height: 1.25; }
-  .footer-copy strong { font-family: var(--display); font-size: 17px; }
-  .footer-copy span { margin-top: 4px; color: rgba(245,241,232,.55); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
-  .footer-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px 24px; }
-  .footer-links a { color: rgba(245,241,232,.7); font-size: 12px; text-decoration-color: rgba(201,124,77,.65); text-underline-offset: 4px; }
-  .footer-links a:hover { color: var(--cream); }
+  .site-footer {
+    padding: 3rem 0 2.5rem;
+    background: var(--charcoal);
+    color: var(--cream);
+  }
+  .footer-inner { text-align: center; }
+  .logo-svg--footer {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto .75rem;
+    display: block;
+  }
+  .footer-tagline {
+    margin: 0 0 .5rem;
+    color: rgba(245,241,232,.65);
+    font-family: var(--display);
+    font-size: 1rem;
+    font-style: italic;
+  }
+  .footer-copy {
+    margin: 0;
+    color: rgba(245,241,232,.35);
+    font-size: .78rem;
+  }
+  .flex-git {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .flex-git svg { width: 18px; }
 
   @media (max-width: 1020px) {
     .head-nav { display: none; }
@@ -422,8 +442,6 @@
     .specs { grid-template-columns: repeat(2, 1fr); }
     .spec:nth-child(2n) { border-right: 0; }
     .spec:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
-    .foot-in { align-items: flex-start; flex-direction: column; }
-    .footer-links { justify-content: flex-start; }
   }
   @media (max-width: 430px) {
     .family-link { max-width: 108px; line-height: 1.25; text-align: center; }
@@ -660,20 +678,27 @@
 
 </main>
 
-<footer>
-  <div class="wrap foot-in">
-    <div class="footer-brand">
-      <span class="footer-mark" aria-hidden="true">O</span>
-      <span class="footer-copy">
-        <strong>Occhino<span class="brand-accent">.web</span></strong>
-        <span>Un'attività della Famiglia Occhino</span>
-      </span>
-    </div>
-    <div class="footer-links">
-      <a href="https://www.occhino.it">Famiglia Occhino</a>
-      <a href="mailto:webmaster@occhino.it">webmaster@occhino.it</a>
-    </div>
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <svg class="logo-svg--footer" viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="35" cy="35" r="31" fill="none" stroke="#C97C4D" stroke-width="2.5" />
+      <text x="35" y="49" text-anchor="middle" font-family="'Playfair Display', Georgia, serif" font-size="40"
+        font-weight="700" fill="#C97C4D">O</text>
+    </svg>
+    <p class="footer-tagline">Famiglia Occhino &mdash; Roccafiorita, Sicilia</p>
+    <p class="footer-copy">
+      &copy; <span id="year"></span> occhino.it &middot; Online dal 2012.
+    </p>
+    <p class="footer-copy flex-git">
+      <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M10.226 17.284c-2.965-.36-5.054-2.493-5.054-5.256 0-1.123.404-2.336 1.078-3.144-.292-.741-.247-2.314.09-2.965.898-.112 2.111.36 2.83 1.01.853-.269 1.752-.404 2.853-.404 1.1 0 1.999.135 2.807.382.696-.629 1.932-1.1 2.83-.988.315.606.36 2.179.067 2.942.72.854 1.101 2 1.101 3.167 0 2.763-2.089 4.852-5.098 5.234.763.494 1.28 1.572 1.28 2.807v2.336c0 .674.561 1.056 1.235.786 4.066-1.55 7.255-5.615 7.255-10.646C23.5 6.188 18.334 1 11.978 1 5.62 1 .5 6.188.5 12.545c0 4.986 3.167 9.12 7.435 10.669.606.225 1.19-.18 1.19-.786V20.63a2.9 2.9 0 0 1-1.078.224c-1.483 0-2.359-.808-2.987-2.313-.247-.607-.517-.966-1.034-1.033-.27-.023-.359-.135-.359-.27 0-.27.45-.471.898-.471.652 0 1.213.404 1.797 1.235.45.651.921.943 1.483.943.561 0 .92-.202 1.437-.719.382-.381.674-.718.944-.943" />
+      </svg>
+      GitHub
+    </p>
   </div>
 </footer>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
