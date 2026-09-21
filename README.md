@@ -28,6 +28,12 @@ The homepage selects one optimized image on each page load from
 so only the chosen image is requested. `hero-studio.jpg` is the CSS fallback
 when JavaScript is unavailable.
 
+## Homepage portfolio
+
+The homepage portfolio uses optimized static captures of the four linked live
+sites in `images/portfolio-*.jpg`. Refresh those captures when a featured site
+changes materially so the visual card still represents the live work.
+
 ## Generated drafts
 
 <!-- draft-index:start -->
